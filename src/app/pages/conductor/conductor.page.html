@@ -1,0 +1,65 @@
+<ion-header>
+  <ion-toolbar color="dark">
+    <ion-title>Conductor</ion-title>
+    <ion-buttons slot="end">
+      <ion-button routerLink="/perfil">
+        <ion-icon name="person-circle-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content color="dark" fullscreen>
+  <div class="content-container">
+    <!-- Información del viaje activo -->
+    <ion-card class="info-card" *ngIf="viajeActivo">
+      <ion-card-header>
+        <ion-card-title class="card-title">Viaje Activo</ion-card-title>
+        <ion-card-subtitle class="card-subtitle">Ruta hacia {{ viajeActivo.destino }}</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <p>Descripción: {{ viajeActivo.descripcion }}</p>
+        <p>Asientos disponibles: {{ viajeActivo.asientosDisponibles }}</p>
+        <p>Costo: {{ viajeActivo.costo }}</p>
+        <ion-button expand="full" color="danger" (click)="cancelarViaje()">Cancelar Viaje</ion-button>
+        <ion-button expand="full" color="primary" >Marcar como en curso</ion-button>
+        <ion-button expand="full" color="secondary" (click)="visualizarMapa()">Visualizar Mapa</ion-button>
+      </ion-card-content>
+      <div id="mapa" style="width: 100%; height: 300px; margin-top: 15px;"></div>
+    </ion-card>
+
+    <!-- Lista de pasajeros que han aceptado el viaje -->
+    <ion-card class="info-card" *ngIf="pasajeros.length > 0">
+      <ion-card-header>
+        <ion-card-title class="card-title">Pasajeros Aceptados</ion-card-title>
+        <ion-card-subtitle class="card-subtitle">Lista de pasajeros que aceptaron el viaje</ion-card-subtitle>
+      </ion-card-header>
+      <ion-card-content>
+        <ion-list>
+          <ion-item *ngFor="let pasajero of pasajeros">
+            <ion-label>
+              <h2>{{ pasajero.email }}</h2>
+              <p>Ubicación: Lat {{ pasajero.ubicacion.lat }}, Lng {{ pasajero.ubicacion.lng }}</p>
+            </ion-label>
+          </ion-item>
+        </ion-list>
+      </ion-card-content>
+    </ion-card>
+
+    <div class="action-buttons">
+      <ion-button expand="block" routerLink="/crear-viaje" color="success" class="custom-button">
+        Crear Viaje
+      </ion-button>
+      <ion-button expand="block"  routerLink="/historial" color="success" class="custom-button">
+        Ver Historial
+      </ion-button>
+      <ion-button expand="block" routerLink="/role-selection" color="primary" class="custom-button">
+        Volver
+      </ion-button>
+    </div>
+
+    <div class="footer">
+      <p>Gestiona tus viajes de forma sencilla y rápida.</p>
+    </div>
+  </div>
+</ion-content>
