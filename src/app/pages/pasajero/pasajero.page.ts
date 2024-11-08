@@ -6,6 +6,7 @@ import * as mapboxgl from 'mapbox-gl';
 import { environment } from '../../../environments/environment';
 import { Geolocation } from '@capacitor/geolocation';
 import { Storage } from '@ionic/storage-angular';
+import { AlertController } from '@ionic/angular';  // Importar AlertController
 
 @Component({
   selector: 'app-pasajero',
@@ -22,7 +23,8 @@ export class PasajeroPage implements OnInit, OnDestroy {
   constructor(
     private db: AngularFireDatabase,
     private afAuth: AngularFireAuth,
-    private storage: Storage
+    private storage: Storage,
+    private alertController: AlertController  // Inyectar el AlertController
   ) {}
 
   async ngOnInit() {
@@ -40,7 +42,7 @@ export class PasajeroPage implements OnInit, OnDestroy {
       .subscribe((data) => {
         this.viajes = data
           .map((action) => ({ key: action.key, ...action.payload.val() as any }))
-          .filter((viaje) => viaje.asientosDisponibles > 0 && viaje.estado !== 'cancelado' && viaje.estado !== 'en curso'); // Filtrar viajes cancelados y en curso
+          .filter((viaje) => viaje.asientosDisponibles > 0 && viaje.estado !== 'cancelado' && viaje.estado !== 'en curso');
         console.log('Viajes actualizados:', this.viajes);
       });
   }
@@ -78,7 +80,20 @@ export class PasajeroPage implements OnInit, OnDestroy {
       }
 
       await this.guardarViajeEnStorage(viaje, ubicacionPasajero);
+
+      // Mostrar alerta de confirmación
+      this.mostrarAlertaConfirmacion(viaje);
     }
+  }
+
+  async mostrarAlertaConfirmacion(viaje: any) {
+    const alert = await this.alertController.create({
+      header: '¡Viaje Confirmado!',
+      message: `Has aceptado el viaje hacia ${viaje.destino}. Tu asiento ha sido reservado. ¡Buen viaje!`,
+      buttons: ['Aceptar'],
+    });
+
+    await alert.present();
   }
 
   async guardarViajeEnStorage(viaje: any, ubicacionPasajero: any) {
@@ -114,7 +129,7 @@ export class PasajeroPage implements OnInit, OnDestroy {
             type: 'LineString',
             coordinates: rutaCoordenadas,
           },
-          properties: {}, // Asegurarse de incluir properties vacíos
+          properties: {},
         },
       });
 
