@@ -3,7 +3,7 @@ import { AngularFireAuth } from '@angular/fire/compat/auth';
 import { AngularFirestore } from '@angular/fire/compat/firestore';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class AuthService {
   constructor(private afAuth: AngularFireAuth, private firestore: AngularFirestore) {}
@@ -18,6 +18,16 @@ export class AuthService {
         await credenciales.user.sendEmailVerification();
       }
 
+      // Guardar datos del usuario en Firestore, con rol 'user' por defecto
+      if (credenciales.user) {
+        const user = {
+          uid: credenciales.user.uid,
+          email: credenciales.user.email,
+          role: 'user', // Asignamos el rol predeterminado 'user'
+        };
+        await this.saveUserData(user);
+      }
+
       return credenciales;
     } catch (error) {
       console.error('Error al registrar el usuario:', error);
@@ -25,10 +35,10 @@ export class AuthService {
     }
   }
 
-  // Guardar datos de usuario en Firestore
+  // Guardar datos del usuario en Firestore (incluyendo el rol 'user')
   async saveUserData(user: any) {
     try {
-      // Asegúrate de que estás usando el UID para guardar el documento del usuario en Firestore
+      // Asegúrate de que estamos usando el UID para guardar el documento del usuario en Firestore
       return await this.firestore.collection('users').doc(user.uid).set(user);
     } catch (error) {
       console.error('Error al guardar datos del usuario en Firestore:', error);

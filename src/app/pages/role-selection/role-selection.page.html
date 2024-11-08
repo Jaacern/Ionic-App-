@@ -11,8 +11,15 @@
 
 <ion-content color="dark">
   <div class="role-selection-container">
-    <h1>Bienvenido, {{ userEmail }}</h1> <!-- Muestra el correo del usuario -->
+    <h1>Bienvenido!  {{ userEmail }}</h1> <!-- Muestra el correo del usuario -->
     
+    <div *ngIf="isAdmin" class="role-card admin-card" (click)="selectAdmin()">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <h2>Panel de Administrador</h2>
+      <p>Gestión de Usuarios, Solicitudes, Estadísticas y Notificaciones</p>
+      <ion-button expand="full" color="primary">Ingresar a panel</ion-button>
+    </div>
+
     <div class="role-card conductor-card" (click)="selectConductor()">
       <ion-icon name="car-sport-outline"></ion-icon>
       <h2>Conductor</h2>
@@ -26,7 +33,8 @@
       <p>Busca viajes disponibles y elige la ruta que te convenga.</p>
       <ion-button expand="full" color="primary">Seleccionar Pasajero</ion-button>
     </div>
-    
+
+
     <!-- Contenedor para el mapa -->
     <div class="location-section">
       <h3>Ubicación Actual</h3>

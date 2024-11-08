@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { AngularFirestore } from '@angular/fire/compat/firestore';
 import * as mapboxgl from 'mapbox-gl';
 import { Geolocation } from '@capacitor/geolocation';
 import { environment } from '../../../environments/environment';
@@ -12,19 +13,38 @@ import { environment } from '../../../environments/environment';
 })
 export class RoleSelectionPage implements OnInit {
   userEmail: string | null = null;
+  isAdmin: boolean = false; // Variable para saber si el usuario es admin
   map!: mapboxgl.Map;
 
   constructor(
     private router: Router,
-    private afAuth: AngularFireAuth
+    private afAuth: AngularFireAuth,
+    private afs: AngularFirestore // Firestore para acceder a los datos del usuario
   ) {}
 
   ngOnInit() {
+    // Obtiene el estado de autenticación del usuario
     this.afAuth.authState.subscribe(user => {
-      this.userEmail = user ? user.email : 'Usuario';
+      if (user) {
+        this.userEmail = user.email;
+
+        // Llama a la función que verifica el rol del usuario
+        this.checkUserRole(user.uid);
+      } else {
+        this.userEmail = 'Usuario';
+      }
     });
 
     this.checkPermissionsAndLoadMap();
+  }
+
+  // Verifica el rol del usuario en Firestore
+  checkUserRole(uid: string) {
+    this.afs.doc(`users/${uid}`).valueChanges().subscribe((userData: any) => {
+      if (userData) {
+        this.isAdmin = userData.role === 'admin'; // Establece true si el rol es admin
+      }
+    });
   }
 
   async checkPermissionsAndLoadMap() {
@@ -94,6 +114,15 @@ export class RoleSelectionPage implements OnInit {
 
   selectPasajero() {
     this.router.navigate(['/pasajero']);
+  }
+
+  selectAdmin() {
+    // Solo permite acceder a esta ruta si el usuario es admin
+    if (this.isAdmin) {
+      this.router.navigate(['/admin']);
+    } else {
+      alert('No tienes permisos para acceder a esta sección');
+    }
   }
 
   goToProfile() {

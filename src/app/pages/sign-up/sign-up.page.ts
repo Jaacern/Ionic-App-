@@ -59,6 +59,7 @@ export class SignUpPage {
           apellido: this.apellido.trim(),
           email: this.email.trim(),
           emailVerified: false
+        
         };
   
         // Guardar el usuario en Firestore
@@ -66,13 +67,13 @@ export class SignUpPage {
         console.log('Usuario registrado y guardado en Firestore:', nuevoUsuario);
   
         // Mensaje de éxito
-        this.presentToast('Registro exitoso. Por favor revisa tu correo para verificar tu cuenta.');
+        this.presentToast('Registro exitoso.');
   
         // Redirigir a la página de inicio de sesión
         this.router.navigate(['/home']);
       } catch (error) {
         console.error('Error al registrar el usuario:', error);
-        this.presentToast('Error al registrar el usuario');
+        this.presentToast('Por favor revisa tu correo para verificar tu cuenta.');
       }
     } else {
       this.presentToast('Por favor completa todos los campos correctamente.');

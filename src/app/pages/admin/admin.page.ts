@@ -1,3 +1,4 @@
+
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 
@@ -11,6 +12,11 @@ export class AdminPage implements OnInit {
   constructor(private router: Router) { }
 
   ngOnInit() {
+  // Método para redirigir al componente de gestión de usuarios
+
+  }
+  goToGestionUsuarios() {
+    this.router.navigate(['/admin/gestionusuarios']);
   }
 
   gestionarUsuarios() {
